@@ -1,5 +1,5 @@
 # nessus_parser
 
-Requerimientos para outpu Excel
+Requerimientos para output xlsx
 
 > pip3 install openpyxl
