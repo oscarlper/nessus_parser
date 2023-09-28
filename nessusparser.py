@@ -2,7 +2,6 @@ import xml.etree.ElementTree as ET
 from openpyxl import Workbook
 import sys
 
-
 # Ruta al archivo .nessus
 if len(sys.argv) <= 1:
 	print('Falta el argumento que identifica el archivo .nessus a parsear')
