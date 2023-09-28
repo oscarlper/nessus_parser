@@ -1,14 +1,28 @@
 import xml.etree.ElementTree as ET
 from openpyxl import Workbook
 import sys
+import os.path
+
+print("  _   _                         ____")
+print(" | \ | | ___  ___ ___ _   _ ___|  _ \ __ _ _ __ ___  ___ _ __")
+print(" |  \| |/ _ \/ __/ __| | | / __| |_) / _` | '__/ __|/ _ \ '__|")
+print(" | |\  |  __/\__ \__ \ |_| \__ \  __/ (_| | |  \__ \  __/ |")
+print(" |_| \_|\___||___/___/\__,_|___/_|   \__,_|_|  |___/\___|_|")
 
 # Ruta al archivo .nessus
 if len(sys.argv) <= 1:
-	print('Falta el argumento que identifica el archivo .nessus a parsear')
+	print('\nFalta el argumento que identifica el archivo .nessus a parsear')
 	print('Sintaxis: python3 nessus_parser.py archivo.nessus')
 	sys.exit()
 else:
+	
 	archivo_nessus = sys.argv[1]
+	check_file = os.path.isfile(archivo_nessus)
+	if (not check_file):
+		print('\nNo se encontro el archivo',archivo_nessus,"\nVerfique el path y/o archivo")
+		sys.exit()
+	else:
+		archivo_nessus = sys.argv[1]
 
 # Ruta para el archivo Excel de salida
 archivo_excel_salida = archivo_nessus+'.xlsx'
@@ -83,4 +97,4 @@ for registro in vulnerabilidades_por_nombre_y_puerto.values():
 # Guardar el archivo Excel
 libro.save(archivo_excel_salida)
 
-print(f"Se ha creado el archivo Excel con las vulnerabilidades, incluyendo la severidad, de severidad 'Critica', 'Alta', 'Media' y 'Baja' (excluyendo 'Info').")
+print(f"\nSe ha creado el archivo Excel ",archivo_nessus,".xlsx")
