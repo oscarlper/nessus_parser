@@ -17,8 +17,8 @@ archivo_excel_salida = archivo_nessus + '.xlsx'
 libro = Workbook()
 hoja = libro.active
 
-# Configurar los nombres de las columnas, incluyendo "Ver Tambien"
-hoja.append(['Vulnerabilidad', 'Severidad', 'CVSS 2.0', 'Port/Service', 'IPs Afectadas', 'Ver Tambien'])
+# Configurar los nombres de las columnas, incluyendo "Ver También"
+hoja.append(['Vulnerabilidad', 'Severidad', 'CVSS 2.0', 'Port/Service', 'IPs Afectadas', 'Ver También'])
 
 # Analizar el archivo .nessus
 tree = ET.parse(archivo_nessus)
@@ -57,7 +57,11 @@ for report_host in root.findall('.//ReportHost'):
 
                 # Obtener la etiqueta see_also con los links de referencia (desde ReportItem)
                 see_also_element = report_item.find('.//see_also')
-                see_also = see_also_element.text if see_also_element is not None else ''
+                if see_also_element is not None and see_also_element.text:
+                    # Separar las URLs y unirlas en una sola cadena, eliminando repeticiones
+                    see_also = ' '.join(set(see_also_element.text.split()))
+                else:
+                    see_also = ''
 
                 if port_element is not None and protocol_element is not None and svc_name_element is not None:
                     port_service = f"{port_element} / {protocol_element} / {svc_name_element}"
@@ -75,18 +79,16 @@ for report_host in root.findall('.//ReportHost'):
                         'CVSS 2.0': cvss_2,
                         'Port/Service': port_service,
                         'IPs Afectadas': [host_ip],
-                        'Ver Tambien': set()  # Usamos un conjunto para URLs únicas
+                        'Ver También': see_also
                     }
                 else:
                     vulnerabilidades_por_nombre_y_puerto[clave_vulnerabilidad]['IPs Afectadas'].append(host_ip)
                     if see_also:
-                        # Agregamos URLs únicas al conjunto
-                        vulnerabilidades_por_nombre_y_puerto[clave_vulnerabilidad]['Ver Tambien'].add(see_also)
+                        vulnerabilidades_por_nombre_y_puerto[clave_vulnerabilidad]['Ver También'] += ' ' + see_also
 
 # Escribir los registros consolidados en la hoja de cálculo
 for registro in vulnerabilidades_por_nombre_y_puerto.values():
     registro['IPs Afectadas'] = ', '.join(registro['IPs Afectadas'])
-    registro['Ver Tambien'] = ' '.join(registro['Ver Tambien'])
     hoja.append(list(registro.values()))
 
 # Guardar el archivo Excel
