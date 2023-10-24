@@ -64,4 +64,6 @@ df = pd.DataFrame(vulnerabilidades_registros, columns=columnas)
 # Guardar los registros en un archivo Excel
 df.to_excel(archivo_excel_salida, index=False)
 
-print(f'Se han recopilado y guardado las vulnerabilidades en {archivo_excel_salida}')
+registros = len(df.index)
+
+print(f'Se han recopilado un total de {registros} vulnerabilidades en {archivo_excel_salida}')
